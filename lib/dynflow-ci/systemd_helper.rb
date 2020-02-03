@@ -1,6 +1,9 @@
 module DynflowCI
   class SystemdHelper
     class << self
+
+      KEYS = %w(SubState ExecMainStatus)
+
       def start(cmd)
         File.write('runme.sh', cmd)
         _, err = Open3.capture3("systemd-run --user --remain-after-exit -p WorkingDirectory=#{Dir.getwd} /bin/sh #{Dir.getwd}/runme.sh")
@@ -14,8 +17,12 @@ module DynflowCI
 
       def show(job)
         `systemctl show --user #{job}`.lines.reduce({}) do |acc, cur|
-          key, value = cur.split('=')
-          acc.merge(key => value.chomp)
+          if KEYS.any? { |key| cur.start_with? key }
+            key, value = cur.split('=')
+            acc.merge(key => value.chomp)
+          else
+            acc
+          end
         end
       end
 
