@@ -2,7 +2,7 @@ require 'dynflow-ci/systemd_helper'
 
 module DynflowCI
   class Polling < Base
-    include ::Dynflow::Actions::Polling
+    include ::Dynflow::Action::Polling
 
     def invoke_external_task
       output[:service] = SystemdHelper.start input[:cmd]
