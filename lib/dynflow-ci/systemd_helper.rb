@@ -2,7 +2,7 @@ module DynflowCI
   class SystemdHelper
     class << self
       def start(cmd)
-        _, err = Open3.collect3("systemd-run --user --remain-after-exit -p WorkingDirectory=#{Dir.cwd} #{cmd}")
+        _, err = Open3.capture3("systemd-run --user --remain-after-exit -p WorkingDirectory=#{Dir.getwd} #{cmd}")
         /(run-.*\.service)/.match(err)[1]
       end
 
@@ -20,6 +20,10 @@ module DynflowCI
 
       def exitcode(job)
         show(job)["ExecMainStatus"].to_i
+      end
+
+      def stop(job)
+        `systemctl --user stop #{job}`
       end
 
       def log(job)
