@@ -5,8 +5,14 @@ module DynflowCI
       KEYS = %w(SubState ExecMainStatus)
 
       def start(cmd)
-        File.write('runme.sh', cmd)
-        _, err = Open3.capture3("systemd-run --user --remain-after-exit -p WorkingDirectory=#{Dir.getwd} /bin/sh #{Dir.getwd}/runme.sh")
+        script = <<EOF
+#!/bin/zsh
+source ~/.zshrc
+eval "$(rbenv init -)"
+#{cmd}
+EOF
+        File.write('runme.sh', script)
+        _, err = Open3.capture3("systemd-run --user --remain-after-exit -p WorkingDirectory=#{Dir.getwd} /bin/zsh -l #{Dir.getwd}/runme.sh")
         /(run-.*\.service)/.match(err)[1]
       end
 
