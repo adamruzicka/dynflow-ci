@@ -24,7 +24,6 @@ class ExampleHelper
       config.auto_rescue         = true
       config.telemetry_adapter   = telemetry_adapter
       config.connector = Proc.new { |world| Dynflow::Connectors::Database.new(world) }
-      config.queues.add(:slow, :pool_size => 3)
       yield config if block_given?
       Dynflow::World.new(config).tap do |world|
         puts "World #{world.id} started..."

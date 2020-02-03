@@ -10,6 +10,8 @@ Thread.new do
   ExampleHelper.run_web_console
 end
 
+REPO = File.expand_path "~/git/factorial"
+
 require 'pry'; binding.pry
 
 puts
